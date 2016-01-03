@@ -1,0 +1,31 @@
+import MapReduce
+import sys
+
+
+mr = MapReduce.MapReduce()
+
+
+def mapper(value):
+   #value is ("a", i, j, a_ij) or ("b", j, k, b_jk)
+    if value[0] == "a":
+        i = value[1]
+        j = value[2]
+        a_ij = value[3]
+        mr.emit_intermediate(j, ("a", i, a_ij))
+    else:
+        j = value[1]
+        k = value[2]
+        b_jk = value[3]
+        mr.emit_intermediate(j, ("b", k, b_jk))
+
+def reducer(order, values):
+    list_A = [(i, a_ij) for (M, i, a_ij) in values if M == "a"]
+    list_B = [(k, b_jk) for (M, k, b_jk) in values if M == "b"]
+    for (i, a_ij) in list_A:
+        for (k, b_jk) in list_B:
+            mr.emit((i, k), a_ij*b_jk)
+# Do not modify below this line
+# =============================
+if __name__ == '__main__':
+  inputdata = open(sys.argv[1])
+  mr.execute(inputdata, mapper, reducer)

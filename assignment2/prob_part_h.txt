@@ -1,0 +1,3 @@
+SELECT SUM(A.count*B.count) FROM( frequency AS A 
+JOIN frequency AS B
+ON A.term = B.term) WHERE A.docid = '10080_txt_crude' AND B.docid = '17035_txt_earn';
